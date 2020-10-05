@@ -73,29 +73,38 @@ Next to the NGSI-LD core context, add or describe in the `@context` the JSON-LD 
 ```jsonld
 {
     "id": "http://example.org/observations/1",
-    "type": "Observation",
-    "createdAt": {
-      "type": "Property",
-      "value": "2020-02-14T12:00:00Z"
+    "type": "sosa:Observation",
+    "sosa:hasSimpleResult": {
+        "type": "Property",
+        "value": 1
     },
-    "modifiedAt": {
-      "type": "Property",
-      "value": "2020-02-15T12:00:00Z"
+    "sosa:observedProperty": {
+        "type": "Property",
+        "value": "http://example.org#CO2"
     },
     ...  other data attributes
     "@context": [{
-        "Observation": "http://www.w3.org/ns/sosa/Observation"
+        "sosa": "http://www.w3.org/ns/sosa/"
       },
       "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context-v1.3.jsonld"
      ]
 }
 ```
 
-The context broker allows every entity, also this one `urn:ngsi-ld:Observation:1`, to be updated at anytime. In order that we can create cacheable fragments for open data reuse, we need objects to become immutable. To do this, we use the event streams specification (work in progress) that describes a stream of versioned objects. The latter is an object that contains the `dcterms:isVersionOf` and `prov:generatedAtTime` properties and will be published by the NGSI-LDF interface.
+### Temporal Evolution API
+
+NGSI-LD API has a temporal evolution API to query entity changes during a certain time interval. The output suffers from two problems:
+
+- no clue when entity was modified
+- when multiple changes happened to an entity during the time interval, there are no semantics which properties changed at the same time. So no reconstruction is possible
+
+### Event stream
+
+The context broker allows every entity, also this one `urn:ngsi-ld:Observation:1`, to be updated at anytime. In order that we can create cacheable fragments for open data reuse, we need objects to become immutable. To do this, we use the event streams specification (work in progress) that describes a stream of versioned objects. The latter is an object that contains the `dcterms:isVersionOf` (te base URI of the mutable object) and `prov:generatedAtTime` (when the object is generated) properties and will be published by the NGSI-LDF interface. Note that `prov:generatedAtTime` equals `createdAt` and `modifiedAt` of the NGSI-LD core model.
 
 ```jsonld
 {
-    "id": "http://example.org/observations/1?modifiedAt=2020-02-15T12:00:00Z",
+    "id": "http://example.org/observations/1?generatedAtTime=2020-02-15T12:00:00Z",
     "type": "Observation",
     "createdAt": {
       "type": "Property",
@@ -115,7 +124,7 @@ The context broker allows every entity, also this one `urn:ngsi-ld:Observation:1
     },
     ...  other data attributes
     "@context": [{
-        "Observation": "http://www.w3.org/ns/sosa/Observation",
+        "sosa": "http://www.w3.org/ns/sosa/"
         "dcterms": "http://purl.org/dc/terms/",
         "prov": "http://www.w3.org/ns/prov#"
       },
@@ -132,31 +141,46 @@ curl -iX POST \
   http://localhost:1026/ngsi-ld/v1/entities \
   -H 'Content-Type: application/ld+json' \
   -d '{
-        "id": "",
+        "id": "http://example.org/observations/1?generatedAtTime=2020-02-15T12:00:00Z",
         "type": "http://www.w3.org/ns/sosa/Observation",
-        "http://www.w3.org/2002/07/owl#sameAs": {
-            "type": "Relationship",
-            "object": "http://localhost:9090/ngsi-ld/v1/entities/urn:ngsi-ld:observations:21"
+        "createdAt": {
+          "type": "Property",
+          "value": "2020-02-15T12:00:00Z"
         },
-        "http://www.w3.org/ns/sosa/observedProperty": {
+        "modifiedAt": {
+          "type": "Property",
+          "value": "2020-02-15T12:00:00Z"
+        },
+        "dcterms:isVersionOf": {
+          "type": "Relationship",
+          "value": "http://example.org/observations/1"
+        },
+        "prov:generatedAtTime": {
+          "type": "Property",
+          "value": "2020-02-15T12:00:00Z"
+        },
+        "sosa:observedProperty": {
             "type": "Property",
             "value": "http://example.org#CO2"
         },
-        "http://www.w3.org/ns/sosa/hasSimpleResult": {
+        "sosa:hasSimpleResult": {
             "type": "Property",
             "value": 22
         },
         "location": {
-                "type": "GeoProperty",
-                "value": {
-                        "type": "Point",
-                        "coordinates": [3.70944, 51.01328]
-                }
+            "type": "GeoProperty",
+            "value": {
+                "type": "Point",
+                "coordinates": [3.70944, 51.01328]
+            }
         },
-        "@context": [
+        "@context": [{
+                "sosa": "http://www.w3.org/ns/sosa/",
+                "dcterms": "http://purl.org/dc/terms/",
+                "prov": "http://www.w3.org/ns/prov#"
+            },
             "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
         ]
 }'
 ```
-Scorpio has an issue with entity id's that are URLs. This is why we created a URN for the entity ID and owl:sameAs relation to its dereferenceable URI.
 
