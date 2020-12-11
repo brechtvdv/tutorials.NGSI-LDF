@@ -97,11 +97,14 @@ Here is an example how [schema.org](https://schema.org/version/latest/schemaorg-
 ```
 Below you can find more similar examples of W3C SSN and OSLO.
 
-# NGSI-LD Metadata model
+But what if I want to add metadata to triples? (like how certain it is or when was this generated)
+RDF has multiple ways to solve this (use the PROV-O ontology to add provenance, or N-ary relations, reification, named graphs etc.), but these methods are not intuitive. See [this article](https://enterprise-knowledge.com/rdf-what-is-it-and-why-do-i-need-it/) for an in-depth explanation.
 
-In the previous section, we saw that RDFS allows to define classes and properties for a certain vocabulary.
-However, complex situations... (n-ary relations etc.)
--> RDF*
+Currently, there are two approaches that also tackle this:
+- A new RDF version (RDF* - RDF star) has been created which preserves the strength and simplicity of RDF (it's back-wards compatible), while allowing referencing triples to add supplementary metadata.
+- The NGSI-LD metadata model created new resources to define "Entities", "Properties" and "Relations", which we will explain in the next section.
+
+# NGSI-LD Metadata model
 
 
  ### NGSI-LD
