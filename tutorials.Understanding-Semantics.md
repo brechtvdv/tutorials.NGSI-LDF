@@ -16,7 +16,9 @@ Knowledge is represented as a set of facts, which are described with triple-stat
 
 For example, if I want to express that the housenumber of my house is 14,
 than you describe this with an RDF triple:
-\<myHouse\> \<hasHouseNumber\> "14" .
+```
+<myHouse> <hasHouseNumber> "14" .
+```
 
 In a RDF triple, you have three parts:
 - the subject (\<myHouse\>)
@@ -25,7 +27,9 @@ In a RDF triple, you have three parts:
   
 In this example, the subject and predicate are `nodes` while the object is a `literal`.
 It's also possible to have a node in the object, for example:
-\<myHouse\> \<hasNeighbouringHouse\> \<myNeighoursHouse\> .
+```
+<myHouse> <hasNeighbouringHouse> <myNeighoursHouse> .
+```
 
 Nodes are the glue for Linked Data: other datasets can also reference \<myHouse\> when they want to state facts about my house (e.g. how good is the air quality on a working day). Also, it's important that datasets use the same reference for predicates, like \<hasHouseNumber\>, to allow automatic integration of different datasets.
 
