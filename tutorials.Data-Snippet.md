@@ -108,3 +108,99 @@ The building name expects a Geografic name (GeografischeNaam). When you hover it
 Finally, use the [JSON-LD playground](https://json-ld.org/playground/#startTab=tab-table&json-ld=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fdata.vlaanderen.be%2Fcontext%2Fgebouwenregister.jsonld%22%2C%7B%222DGebouwgeometrie%22%3A%22https%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fgebouw%232DGebouwgeometrie%22%2C%22Geometry%22%3A%22http%3A%2F%2Fwww.w3.org%2Fns%2Flocn%23Geometry%22%7D%5D%2C%22%40id%22%3A%22http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266%22%2C%22%40type%22%3A%22Gebouw%22%2C%22Gebouw.geometrie%22%3A%7B%22%40type%22%3A%222DGebouwgeometrie%22%2C%22geometrie%22%3A%7B%22%40type%22%3A%22Geometry%22%2C%22wkt%22%3A%7B%22%40value%22%3A%22POINT(3.7288391590118404%2C%2051.04909701806207)%22%2C%22%40type%22%3A%22http%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23wktLiteral%22%7D%7D%7D%2C%22gebouwnaam%22%3A%7B%22%40value%22%3A%22De%20Krook%22%2C%22%40lang%22%3A%22nl%22%7D%7D) to check if all triples are correctly returned:
 
 <img src="https://github.com/brechtvdv/tutorials.NGSI-LDF/raw/master/playground-snippet.PNG" width=400>
+
+## NGSI-LDify
+
+Our data snippet is conform with OSLO. However, to ingest this in an NGSI-LD context broker, we need to apply the NGSI-LD metamodel to our data snippet. The snippet will not have the semantic meaning it is intended by OSLO, but we will be able to process it in a context broker and fix this later on with 1) the keyValues option or 2) NGSI-LDF.
+
+NGSI-LDifying means that we will add an intermediary ngsi:Property object when a triple's object is a Literal, and an intermediary ngsi:Relationship object when the triple's object is another resource. We added the NGSI core context for these terms.
+
+The NGSI-LD data snippet looks as follows:
+
+```
+{
+  "@context": ["http://data.vlaanderen.be/context/gebouwenregister.jsonld", 
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld", {
+    "2DGebouwgeometrie": "https://data.vlaanderen.be/ns/gebouw#2DGebouwgeometrie",
+    "Geometry": "http://www.w3.org/ns/locn#Geometry"
+  }],
+  "@id": "http://www.wikidata.org/entity/Q28962266",
+  "@type": "Gebouw",
+  "Gebouw.geometrie": {
+    "@type": "Relationship",
+    "object": {
+      "@type": "2DGebouwgeometrie",
+      "geometrie": {
+        "@type": "Relationship",
+        "object": {
+          "@type": "Geometry",
+          "wkt": {
+            "@type": "Property",
+            "value": {
+              "@value": "POINT(3.7288391590118404, 51.04909701806207)",
+              "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
+            }
+          }
+        }
+      }
+    }
+  },
+  "gebouwnaam": {
+    "@type": "Property",
+    "value": {
+      "@value": "De Krook",
+      "@lang": "nl"
+    }
+  }
+}
+```
+
+If we want our building to be retrievable with geographic queries using the temporal query API, we need to add the `ngsi:location` property to the building. This location requires a GeoJSON-LD value, so we also add the GeoJSON-LD context to add context to "Point" and "coordinates" :
+
+```
+{
+  "@context": ["http://data.vlaanderen.be/context/gebouwenregister.jsonld", 
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+    "https://geojson.org/geojson-ld/geojson-context.jsonld", {
+    "2DGebouwgeometrie": "https://data.vlaanderen.be/ns/gebouw#2DGebouwgeometrie",
+    "Geometry": "http://www.w3.org/ns/locn#Geometry"
+  }],
+  "@id": "http://www.wikidata.org/entity/Q28962266",
+  "@type": "Gebouw",
+  "Gebouw.geometrie": {
+    "@type": "Relationship",
+    "object": {
+      "@type": "2DGebouwgeometrie",
+      "geometrie": {
+        "@type": "Relationship",
+        "object": {
+          "@type": "Geometry",
+          "wkt": {
+            "@type": "Property",
+            "value": {
+              "@value": "POINT(3.7288391590118404, 51.04909701806207)",
+              "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
+            }
+          }
+        }
+      }
+    }
+  },
+  "gebouwnaam": {
+    "@type": "Property",
+    "value": {
+      "@value": "De Krook",
+      "@lang": "nl"
+    }
+  },
+  "location": {
+      "type": "GeoProperty",
+      "value": {
+          "type": "Point",
+          "coordinates": [3.7288391590118404, 51.04909701806207]
+      }
+    }
+}
+```
+
+Use the [JSON-LD playground](https://json-ld.org/playground/#startTab=tab-table&json-ld=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fdata.vlaanderen.be%2Fcontext%2Fgebouwenregister.jsonld%22%2C%22https%3A%2F%2Furi.etsi.org%2Fngsi-ld%2Fv1%2Fngsi-ld-core-context.jsonld%22%2C%22https%3A%2F%2Fgeojson.org%2Fgeojson-ld%2Fgeojson-context.jsonld%22%2C%7B%222DGebouwgeometrie%22%3A%22https%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fgebouw%232DGebouwgeometrie%22%2C%22Geometry%22%3A%22http%3A%2F%2Fwww.w3.org%2Fns%2Flocn%23Geometry%22%7D%5D%2C%22%40id%22%3A%22http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266%22%2C%22%40type%22%3A%22Gebouw%22%2C%22Gebouw.geometrie%22%3A%7B%22%40type%22%3A%22Relationship%22%2C%22object%22%3A%7B%22%40type%22%3A%222DGebouwgeometrie%22%2C%22geometrie%22%3A%7B%22%40type%22%3A%22Relationship%22%2C%22object%22%3A%7B%22%40type%22%3A%22Geometry%22%2C%22wkt%22%3A%7B%22%40type%22%3A%22Property%22%2C%22value%22%3A%7B%22%40value%22%3A%22POINT(3.7288391590118404%2C%2051.04909701806207)%22%2C%22%40type%22%3A%22http%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23wktLiteral%22%7D%7D%7D%7D%7D%7D%2C%22gebouwnaam%22%3A%7B%22%40type%22%3A%22Property%22%2C%22value%22%3A%7B%22%40value%22%3A%22De%20Krook%22%2C%22%40lang%22%3A%22nl%22%7D%7D%2C%22location%22%3A%7B%22type%22%3A%22GeoProperty%22%2C%22value%22%3A%7B%22type%22%3A%22Point%22%2C%22coordinates%22%3A%5B3.7288391590118404%2C51.04909701806207%5D%7D%7D%7D) to check whether everything parses correctly.
