@@ -1,21 +1,26 @@
 In this tutorial, we will a setup a NGSI-LD context broker.
-The data snippet of the previous tutorial will be ingested to showcase some of the API calls that are possible with NGSI-LD.
+The NGSI-LDified OSLO data snippet of the previous [tutorial](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Data-Snippet.md#ngsi-ldify) will be ingested to showcase some of the API calls that are possible with NGSI-LD.
 Also, we will demonstrate how the query parameter `options=keyValues` allows to output OSLO-compliant data.
 
 # Install NGSI-LD
 
 Make sure you have Docker installed, otherwise follow these instructions: https://github.com/FIWARE/tutorials.Linked-Data#docker
 
-´´´
+There are two ways to install NGSI-LD context broker:
+## 1) From Fiware tutorials
+
+```
 git clone https://github.com/FIWARE/tutorials.Linked-Data.git
 cd tutorials.Linked-Data
 ./services scorpio
-´´´
+```
 
 If you want to clean up and start again, run following command:
 ```
 ./services stop
 ```
+## 2) From Scorpio
+
 Or run following commands:
 
 ```
@@ -132,4 +137,8 @@ Use the `&options=keyValues` query parameter to retrieve the simplified, RDFS Cl
 }
 ```
 Note that that "Point" and "coordinates" lost its correct mapping to GeoJSON-LD due to a bug.
+
+# GeoTemporal query
+
+# Retrieve OSLO compliant object
 
