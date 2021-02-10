@@ -189,8 +189,7 @@ If we want our building to be retrievable with geographic queries using the temp
   "gebouwnaam": {
     "@type": "Property",
     "value": {
-      "@value": "De Krook",
-      "@lang": "nl"
+      "@value": "De Krook"
     }
   },
   "location": {
@@ -202,5 +201,7 @@ If we want our building to be retrievable with geographic queries using the temp
     }
 }
 ```
+
+Note that we removed the language tag from gebouwnaam due to a [bug](https://github.com/ScorpioBroker/ScorpioBroker/issues/198).
 
 Use the [JSON-LD playground](https://json-ld.org/playground/#startTab=tab-table&json-ld=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fdata.vlaanderen.be%2Fcontext%2Fgebouwenregister.jsonld%22%2C%22https%3A%2F%2Furi.etsi.org%2Fngsi-ld%2Fv1%2Fngsi-ld-core-context.jsonld%22%2C%22https%3A%2F%2Fgeojson.org%2Fgeojson-ld%2Fgeojson-context.jsonld%22%2C%7B%222DGebouwgeometrie%22%3A%22https%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fgebouw%232DGebouwgeometrie%22%2C%22Geometry%22%3A%22http%3A%2F%2Fwww.w3.org%2Fns%2Flocn%23Geometry%22%7D%5D%2C%22%40id%22%3A%22http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266%22%2C%22%40type%22%3A%22Gebouw%22%2C%22Gebouw.geometrie%22%3A%7B%22%40type%22%3A%22Relationship%22%2C%22object%22%3A%7B%22%40type%22%3A%222DGebouwgeometrie%22%2C%22geometrie%22%3A%7B%22%40type%22%3A%22Relationship%22%2C%22object%22%3A%7B%22%40type%22%3A%22Geometry%22%2C%22wkt%22%3A%7B%22%40type%22%3A%22Property%22%2C%22value%22%3A%7B%22%40value%22%3A%22POINT(3.7288391590118404%2C%2051.04909701806207)%22%2C%22%40type%22%3A%22http%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23wktLiteral%22%7D%7D%7D%7D%7D%7D%2C%22gebouwnaam%22%3A%7B%22%40type%22%3A%22Property%22%2C%22value%22%3A%7B%22%40value%22%3A%22De%20Krook%22%2C%22%40lang%22%3A%22nl%22%7D%7D%2C%22location%22%3A%7B%22type%22%3A%22GeoProperty%22%2C%22value%22%3A%7B%22type%22%3A%22Point%22%2C%22coordinates%22%3A%5B3.7288391590118404%2C51.04909701806207%5D%7D%7D%7D) to check whether everything parses correctly.
