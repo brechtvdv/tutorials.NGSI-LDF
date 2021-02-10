@@ -43,46 +43,46 @@ To retrieve the subject page of this specific entity, we added a `rdfs:seeAlso` 
 curl --location --request POST 'localhost:9090/ngsi-ld/v1/entities' \
 --header 'Content-Type: application/ld+json' \
 --data-raw '{
-      "@id": "urn:DeKrook",
-      "@type": "Building",
-      "seeAlso": {
-        "@type": "Relationship",
-        "object": "base:urn%3AmyHouse"
-      },
-      "location": {
-            "type": "GeoProperty",
-            "value": {
-                "type": "Point",
-                "coordinates": [3.7288391590118404, 51.04909701806207]
-            }
-      },
-      "hasHouseNumber": {
-          "@type": "Property",
-          "value": "14"
-      },
-      "hasNeighbouringHouse": {
-        "@type": "Relationship",
-        "object": "urn:myNeighboursHouse"
-      },
-      "@context": [{
-            "base": "http://localhost:9090/ngsi-ld/v1/entities/",
-            "seeAlso": {
-                "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso",
-                "@type": "@id"
-            },
-            "Building": "https://data.vlaanderen.be/ns/gebouw#Gebouw",
-            "hasHouseNumber": {
-              "@id": "http://example.org/hasHouseNumber",
-              "@type": "http://www.w3.org/2001/XMLSchema#string"
-            },
-            "hasNeighbouringHouse": {
-              "@id": "http://example.org/hasNeighbouringHouse",
-              "@type": "@id"
-            }
-    },
+  "@context": ["http://data.vlaanderen.be/context/gebouwenregister.jsonld", 
     "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
-    "https://geojson.org/geojson-ld/geojson-context.jsonld"
-    ]
+    "https://geojson.org/geojson-ld/geojson-context.jsonld", {
+    "2DGebouwgeometrie": "https://data.vlaanderen.be/ns/gebouw#2DGebouwgeometrie",
+    "Geometry": "http://www.w3.org/ns/locn#Geometry"
+  }],
+  "@id": "http://www.wikidata.org/entity/Q28962266",
+  "@type": "Gebouw",
+  "Gebouw.geometrie": {
+    "@type": "Relationship",
+    "object": {
+      "@type": "2DGebouwgeometrie",
+      "geometrie": {
+        "@type": "Relationship",
+        "object": {
+          "@type": "Geometry",
+          "wkt": {
+            "@type": "Property",
+            "value": {
+              "@value": "POINT(3.7288391590118404, 51.04909701806207)",
+              "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
+            }
+          }
+        }
+      }
+    }
+  },
+  "gebouwnaam": {
+    "@type": "Property",
+    "value": {
+      "@value": "De Krook"
+    }
+  },
+  "location": {
+      "type": "GeoProperty",
+      "value": {
+          "type": "Point",
+          "coordinates": [3.7288391590118404, 51.04909701806207]
+      }
+    }
 }'
 ```
 
@@ -91,50 +91,58 @@ curl --location --request POST 'localhost:9090/ngsi-ld/v1/entities' \
 Our building can be retrieved using following link: `http://localhost:9090/ngsi-ld/v1/entities?type=https%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fgebouw%23Gebouw`
 A `type` query parameter is mandatory in NGSI-LD and must be encoded.
 
-This should return following data snippet:
+You can also add a context link through the HTTP Link-header to make it more readable:
 ```
-{
-  "id" : "urn:myHouse",
-  "type" : "https://data.vlaanderen.be/ns/gebouw#Gebouw",
-  "http://example.org/hasHouseNumber" : {
-    "type" : "Property",
-    "value" : "3"
-  },
-  "http://example.org/hasNeighbouringHouse" : {
-    "type" : "Relationship",
-    "object" : "houses:myNeighboursHouse"
-  },
-  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : {
-    "type" : "Relationship",
-    "object" : "http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Flocalhost%3A9090%2Fngsi-ld%2Fv1%2Fentities%2FmyHouse&options=keyValues"
-  },
-  "location" : {
-    "type" : "GeoProperty",
-    "value" : {
-      "type" : "Point",
-      "coordinates" : [ 3.7288391590118404, 51.04909701806207 ]
+curl --location --request GET 'localhost:9090/ngsi-ld/v1/entities?type=Gebouw' \
+--header 'Accept: application/ld+json' \
+--header 'Link: <http://data.vlaanderen.be/context/gebouwenregister.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'
+```
+
+The latter should return following data snippet:
+```
+[
+    {
+        "id": "http://www.wikidata.org/entity/Q28962266",
+        "type": "Gebouw",
+        "Gebouw:.geometrie": {
+            "type": "Relationship",
+            "object": {
+                "type": "https://data.vlaanderen.be/ns/gebouw#2DGebouwgeometrie",
+                "https://data.vlaanderen.be/ns/gebouw#geometrie": {
+                    "type": "Relationship",
+                    "object": {
+                        "type": "http://www.w3.org/ns/locn#Geometry",
+                        "http://www.opengis.net/ont/geosparql#asWKT": {
+                            "type": "Property",
+                            "value": {
+                                "type": "http://www.opengis.net/ont/geosparql#wktLiteral",
+                                "@value": "POINT(3.7288391590118404, 51.04909701806207)"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "https://data.vlaanderen.be/ns/gebouw#gebouwnaam": {
+            "type": "Property",
+            "value": "De Krook"
+        },
+        "location": {
+            "type": "GeoProperty",
+            "value": {
+                "type": "Point",
+                "coordinates": [
+                    3.7288391590118404,
+                    51.04909701806207
+                ]
+            }
+        },
+        "@context": [
+            "http://data.vlaanderen.be/context/gebouwenregister.jsonld",
+            "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+        ]
     }
-  },
-  "@context" : [ "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld" ]
-}
-```
-
-Use the `&options=keyValues` query parameter to retrieve the simplified, RDFS Class/Property compatible representation:
-`http://localhost:9090/ngsi-ld/v1/entities?type=https%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fgebouw%23Gebouw&options=keyValues`
-
-```
-{
-  "id" : "urn:myHouse",
-  "type" : "https://data.vlaanderen.be/ns/gebouw#Gebouw",
-  "http://example.org/hasHouseNumber" : "3",
-  "http://example.org/hasNeighbouringHouse" : "houses:myNeighboursHouse",
-  "http://www.w3.org/2000/01/rdf-schema#seeAlso" : "http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Flocalhost%3A9090%2Fngsi-ld%2Fv1%2Fentities%2FmyHouse&options=keyValues",
-  "location" : {
-    "type" : "Point",
-    "coordinates" : [ 3.7288391590118404, 51.04909701806207 ]
-  },
-  "@context" : [ "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld" ]
-}
+]
 ```
 Note that that "Point" and "coordinates" lost its correct mapping to GeoJSON-LD due to a bug.
 
