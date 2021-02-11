@@ -33,11 +33,9 @@ Visit the info URL of the broker (`http://localhost:9090/scorpio/v1/info`) to se
 
 # Create entity
 
-Run the command below in your CLI to add a building with URN 'urn:DeKrook' to the NGSI-LD endpoint.
-The coordinates match with the location of public library "De Krook" in the city of Ghent.
-// TODO: change to URL `http://localhost:9090/ngsi-ld/v1/entities/myHouse`
-We must use the NGSI-LD metadata model to make it retrievable with the temporal query API.
-To retrieve the subject page of this specific entity, we added a `rdfs:seeAlso` link to the /entities/{id} endpoint.
+We described "De Krook", the public library of the city of Ghent, in our previous [tutorial](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Data-Snippet.md#ngsi-ldify). Note that NGSI-LDified this to make it retrievable through the temporal query API of NGSI-LD.
+We will add this building (or entity) to the NGSI-LD endpoint using the cURL command below.
+Run this in your command line interface: 
 
 ```
 curl --location --request POST 'localhost:9090/ngsi-ld/v1/entities' \
@@ -88,65 +86,14 @@ curl --location --request POST 'localhost:9090/ngsi-ld/v1/entities' \
 
 # Retrieve entity
 
-Our building can be retrieved using following link: `http://localhost:9090/ngsi-ld/v1/entities?type=https%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fgebouw%23Gebouw`
-A `type` query parameter is mandatory in NGSI-LD and must be encoded.
+A first method to retrieve our building is to use the `GET /entities` endpoint with following link: `http://localhost:9090/ngsi-ld/v1/entities?type=https%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fgebouw%23Gebouw`
+A `type` query parameter is mandatory for this endpoint and must be encoded.
 
-You can also add a context link through the HTTP Link-header to make it more readable:
-```
-curl --location --request GET 'localhost:9090/ngsi-ld/v1/entities?type=Gebouw' \
---header 'Accept: application/ld+json' \
---header 'Link: <http://data.vlaanderen.be/context/gebouwenregister.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'
-```
-
-The latter should return following data snippet:
-```
-[
-    {
-        "id": "http://www.wikidata.org/entity/Q28962266",
-        "type": "Gebouw",
-        "Gebouw:.geometrie": {
-            "type": "Relationship",
-            "object": {
-                "type": "https://data.vlaanderen.be/ns/gebouw#2DGebouwgeometrie",
-                "https://data.vlaanderen.be/ns/gebouw#geometrie": {
-                    "type": "Relationship",
-                    "object": {
-                        "type": "http://www.w3.org/ns/locn#Geometry",
-                        "http://www.opengis.net/ont/geosparql#asWKT": {
-                            "type": "Property",
-                            "value": {
-                                "type": "http://www.opengis.net/ont/geosparql#wktLiteral",
-                                "@value": "POINT(3.7288391590118404, 51.04909701806207)"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "https://data.vlaanderen.be/ns/gebouw#gebouwnaam": {
-            "type": "Property",
-            "value": "De Krook"
-        },
-        "location": {
-            "type": "GeoProperty",
-            "value": {
-                "type": "Point",
-                "coordinates": [
-                    3.7288391590118404,
-                    51.04909701806207
-                ]
-            }
-        },
-        "@context": [
-            "http://data.vlaanderen.be/context/gebouwenregister.jsonld",
-            "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
-        ]
-    }
-]
-```
-Note that that "Point" and "coordinates" lost its correct mapping to GeoJSON-LD due to a bug.
+A second method is to use the `GET /entities/:id` endpoint with following link: `http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266`
 
 # GeoTemporal query
+
+
 
 # Retrieve OSLO compliant object
 
