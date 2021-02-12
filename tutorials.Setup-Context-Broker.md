@@ -1,6 +1,6 @@
 In this tutorial, we will a setup a NGSI-LD context broker.
 The NGSI-LDified OSLO data snippet of the previous [tutorial](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Data-Snippet.md#ngsi-ldify) will be ingested to showcase some of the API calls that are possible with NGSI-LD.
-Also, we will demonstrate how the query parameter `options=keyValues` allows to output OSLO-compliant data.
+Also, we will demonstrate how the query parameter `options=keyValues` is not sufficient to output OSLO-compliant data.
 
 # Install NGSI-LD
 
@@ -71,7 +71,8 @@ curl --location --request POST 'localhost:9090/ngsi-ld/v1/entities' \
   "gebouwnaam": {
     "@type": "Property",
     "value": {
-      "@value": "De Krook"
+      "@value": "De Krook",
+      "@language": "nl"
     }
   },
   "location": {
@@ -89,11 +90,88 @@ curl --location --request POST 'localhost:9090/ngsi-ld/v1/entities' \
 A first method to retrieve our building is to use the `GET /entities` endpoint with following link: `http://localhost:9090/ngsi-ld/v1/entities?type=https%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fgebouw%23Gebouw`
 A `type` query parameter is mandatory for this endpoint and must be encoded.
 
+This will return an array of buildings with length 1:
+```
+[{
+  "id" : "http://www.wikidata.org/entity/Q28962266",
+  "type" : "https://data.vlaanderen.be/ns/gebouw#Gebouw",
+  "https://data.vlaanderen.be/ns/gebouw#Gebouw.geometrie" : {
+    "type" : "Relationship",
+    "object" : {
+      "type" : "https://data.vlaanderen.be/ns/gebouw#2DGebouwgeometrie",
+      "https://data.vlaanderen.be/ns/gebouw#geometrie" : {
+        "type" : "Relationship",
+        "object" : {
+          "type" : "http://www.w3.org/ns/locn#Geometry",
+          "http://www.opengis.net/ont/geosparql#asWKT" : {
+            "type" : "Property",
+            "value" : {
+              "type" : "http://www.opengis.net/ont/geosparql#wktLiteral",
+              "@value" : "POINT(3.7288391590118404, 51.04909701806207)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "https://data.vlaanderen.be/ns/gebouw#gebouwnaam" : {
+    "type" : "Property",
+    "value" : {
+      "@language" : "nl",
+      "@value" : "De Krook"
+    }
+  },
+  "location" : {
+    "type" : "GeoProperty",
+    "value" : {
+      "type" : "Point",
+      "coordinates" : [ 3.7288391590118404, 51.04909701806207 ]
+    }
+  },
+  "@context" : [ "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld" ]
+}]
+```
 A second method is to use the `GET /entities/:id` endpoint with following link: `http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266`
 
-# GeoTemporal query
+# Retrieve OSLO compliant entity
 
+We received our entity in the NGSI-LD metadata model, which allows adding metadata to properties and relations (cfr. property graph model).
+In the NGSI-LD specification, it is mentioned that you use the options query parameter set to `keyValues` to retrieve a simplified representation of the response (`?options=keyValues`).
+This way, we could retrieve an OSLO compliant data snippet, however, the simplified representation only focuses at the first level of the graph. This means that complex objects, such as our Gebouw.geometrie property, will not be returned in full.
 
+To demonstrate this, run following request: `http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266?options=keyValues`
 
-# Retrieve OSLO compliant object
+This returns our building as follows:
 
+```
+{
+    "id": "http://www.wikidata.org/entity/Q28962266",
+    "type": "https://data.vlaanderen.be/ns/gebouw#Gebouw",
+    "https://data.vlaanderen.be/ns/gebouw#Gebouw.geometrie": [],
+    "https://data.vlaanderen.be/ns/gebouw#gebouwnaam": {
+        "@language": "nl",
+        "@value": "De Krook"
+    },
+    "location": {
+        "type": "Point",
+        "coordinates": [
+            3.7288391590118404,
+            51.04909701806207
+        ]
+    },
+    "@context": [
+        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+    ]
+}
+```
+
+The value of `https://data.vlaanderen.be/ns/gebouw#Gebouw.geometrie` is an empty array, because the geometry object did not have an URI provided (blank node).
+As the simplification only happens on the first level, NGSI-LD has limited use for common (RDFS) Linked Data standards where a compliant output depends on this feature.
+In NGSI-LDF, we fix this by simplifying the whole entity and not only on the first level.
+
+# Temporal query
+
+Now that we hadded an entity to the NGSI-LD context broker, we can use the temporal query API to retrieve our building according to a certain time window and spatial location.
+This will be important in the NGSI-LDF tutorial where Linked Data Fragments are generated through temporal queries.
+
+Run following URL: todo
