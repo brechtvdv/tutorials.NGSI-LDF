@@ -48,14 +48,16 @@ curl --location --request POST 'localhost:9090/ngsi-ld/v1/entities' \
     "Geometry": "http://www.w3.org/ns/locn#Geometry"
   }],
   "@id": "http://www.wikidata.org/entity/Q28962266",
-  "@type": "Gebouw",
+  "@type": "https://data.vlaanderen.be/ns/gebouw#Gebouw",
   "Gebouw.geometrie": {
     "@type": "Relationship",
     "object": {
+      "@id": "http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266#2DGebouwgeometrie",
       "@type": "2DGebouwgeometrie",
       "geometrie": {
         "@type": "Relationship",
         "object": {
+          "@id": "http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266#geometrieClass",
           "@type": "Geometry",
           "wkt": {
             "@type": "Property",
@@ -92,16 +94,18 @@ A `type` query parameter is mandatory for this endpoint and must be encoded.
 
 This will return an array of buildings with length 1:
 ```
-[{
+[ {
   "id" : "http://www.wikidata.org/entity/Q28962266",
   "type" : "https://data.vlaanderen.be/ns/gebouw#Gebouw",
   "https://data.vlaanderen.be/ns/gebouw#Gebouw.geometrie" : {
     "type" : "Relationship",
     "object" : {
+      "id" : "http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266#2DGebouwgeometrie",
       "type" : "https://data.vlaanderen.be/ns/gebouw#2DGebouwgeometrie",
       "https://data.vlaanderen.be/ns/gebouw#geometrie" : {
         "type" : "Relationship",
         "object" : {
+          "id" : "http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266#geometrieClass",
           "type" : "http://www.w3.org/ns/locn#Geometry",
           "http://www.opengis.net/ont/geosparql#asWKT" : {
             "type" : "Property",
@@ -145,29 +149,22 @@ This returns our building as follows:
 
 ```
 {
-    "id": "http://www.wikidata.org/entity/Q28962266",
-    "type": "https://data.vlaanderen.be/ns/gebouw#Gebouw",
-    "https://data.vlaanderen.be/ns/gebouw#Gebouw.geometrie": [],
-    "https://data.vlaanderen.be/ns/gebouw#gebouwnaam": {
-        "@language": "nl",
-        "@value": "De Krook"
-    },
-    "location": {
-        "type": "Point",
-        "coordinates": [
-            3.7288391590118404,
-            51.04909701806207
-        ]
-    },
-    "@context": [
-        "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
-    ]
+  "id" : "http://www.wikidata.org/entity/Q28962266",
+  "type" : "https://data.vlaanderen.be/ns/gebouw#Gebouw",
+  "https://data.vlaanderen.be/ns/gebouw#Gebouw.geometrie" : "http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266#2DGebouwgeometrie",
+  "https://data.vlaanderen.be/ns/gebouw#gebouwnaam" : {
+    "@language" : "nl",
+    "@value" : "De Krook"
+  },
+  "location" : {
+    "type" : "Point",
+    "coordinates" : [ 3.7288391590118404, 51.04909701806207 ]
+  },
+  "@context" : [ "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld" ]
 }
 ```
 
-The value of `https://data.vlaanderen.be/ns/gebouw#Gebouw.geometrie` is an empty array, because the geometry object did not have an URI provided (blank node).
-As the simplification only happens on the first level, NGSI-LD has limited use for common (RDFS) Linked Data standards where a compliant output depends on this feature.
-In NGSI-LDF, we fix this by simplifying the whole entity and not only on the first level.
+The value of `https://data.vlaanderen.be/ns/gebouw#Gebouw.geometrie` is only referring to the URI of the 2DGebouwgeometrie. It's important to make to also add this entity to the broker so it becomes referenceable.
 
 # Temporal query
 
