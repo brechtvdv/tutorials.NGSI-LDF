@@ -133,7 +133,7 @@ This will return an array of buildings with length 1:
 ```
 A second method is to use the `GET /entities/:id` endpoint with following link: `http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266`
 
-# Retrieve OSLO compliant entity
+# Trying to retrieve OSLO compliant entity
 
 We received our entity in the NGSI-LD metadata model, which allows adding metadata to properties and relations (cfr. property graph model).
 In the NGSI-LD specification, it is mentioned that you use the options query parameter set to `keyValues` to retrieve a simplified representation of the response (`?options=keyValues`).
