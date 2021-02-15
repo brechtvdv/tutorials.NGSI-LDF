@@ -137,12 +137,11 @@ This will return an array of buildings with length 1:
 ```
 A second method is to use the `GET /entities/:id` endpoint with following link: `http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266`
 
-# Trying to retrieve OSLO compliant entity
+# Retrieve OSLO compliant entity
 
 We received our entity in the NGSI-LD metadata model, which allows adding metadata to properties and relations (cfr. property graph model).
 In the NGSI-LD specification, it is mentioned that you use the options query parameter set to `keyValues` to retrieve a simplified representation of the response (`?options=keyValues`).
-This way, we could retrieve an OSLO compliant data snippet, however, the simplified representation only focuses at the first level of the graph. This means that complex objects, such as our Gebouw.geometrie property, will not be returned in full.
-
+This way, we can retrieve data conform OSLO, however, the simplified representation only focuses at the first level of the graph.
 To demonstrate this, run following request: `http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266?options=keyValues`
 
 This returns our building as follows:
@@ -164,11 +163,42 @@ This returns our building as follows:
 }
 ```
 
-The value of `https://data.vlaanderen.be/ns/gebouw#Gebouw.geometrie` is only referring to the URI of the 2DGebouwgeometrie. It's important to make to also add this entity to the broker so it becomes referenceable.
+The value of `https://data.vlaanderen.be/ns/gebouw#Gebouw.geometrie` is only referring to the URI of the 2DGebouwgeometrie. A client is able to dereference `http://localhost:9090/ngsi-ld/v1/entities/http%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ28962266#2DGebouwgeometrie` as this uses the same entity page of our building.
 
-# Temporal query
+When validating this snippet with the SHACL shapes of `OSLO Gebouwenregister`, we receive following validation errors:
 
-Now that we hadded an entity to the NGSI-LD context broker, we can use the temporal query API to retrieve our building according to a certain time window and spatial location.
+* Value does not have class <https://data.vlaanderen.be/ns/gebouw#2DGebouwgeometrie>
+* Less than 1 values (<https://data.vlaanderen.be/ns/gebouw#Gebouw.status>). This is expected as this mandatory property was not provided in our data snippet.
+
+<img src="https://github.com/brechtvdv/tutorials.NGSI-LDF/raw/master/validatie-gebouw.PNG" width=400>
+
+The value of `https://data.vlaanderen.be/ns/gebouw#Gebouw.geometrie` (2DGebouwgeometrie) links to another object (datatype in this case). OSLO expects that at least the type of a datatype or class is mentioned with `@type`. Retrieving OSLO compliant relationships (datatypes or classes) is thus not possible in the simplified representation.
+Although, there is no validation error for the `https://data.vlaanderen.be/ns/gebouw#gebouwnaam` property. This means that properties can be retrieved in an OSLO compliant way.
+
+# Geotemporal query
+
+Now that we hadded an entity to the NGSI-LD context broker, we can use the temporal query API to retrieve our building according to a certain time window and location.
 This will be important in the NGSI-LDF tutorial where Linked Data Fragments are generated through temporal queries.
 
-Run following URL: todo
+Following query parameters can be used to retrieve the building:
+
+| Query parameter  | Value |
+| ------------- | ------------- |
+| type  | https://data.vlaanderen.be/ns/gebouw#Gebouw |
+| georel  | within  |
+| geometry  | Polygon  |
+| coordinates  | [[[3.69140625,51.06901665960391],[3.69140625,51.04139389812637],[3.7353515625,51.04139389812637],[3.7353515625,51.06901665960391]]]  |
+| timerel  | between  |
+| time  | 2021-02-15T12:00:00.000Z  |
+| endTime  | 2021-02-15T13:00:00.000Z  |
+| timeproperty  | modifiedAt  |
+
+
+Change the time interval with `time` and `endTime` to your current time.
+The coordinates reflect a polygon around the center of the city of Ghent:
+
+<img src="https://github.com/brechtvdv/tutorials.NGSI-LDF/raw/master/tile-ghent.PNG" width=400>
+
+The, use following URL (adapt the time interval): http://localhost:9090/ngsi-ld/v1/temporal/entities?type=https%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fgebouw%23Gebouw&georel=within&geometry=Polygon&coordinates=[[[3.69140625,51.06901665960391],[3.69140625,51.04139389812637],[3.7353515625,51.04139389812637],[3.7353515625,51.06901665960391]]]&timerel=between&time=2021-02-15T12:00:00.000Z&endTime=2021-02-15T13:00:00.000Z&timeproperty=modifiedAt&options=sysAttrs
+
+Note that we also added `options=sysAttrs` to retrieve extra system metadata, such as `createdAt` and `modifiedAt`.
