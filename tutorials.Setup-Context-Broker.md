@@ -177,7 +177,7 @@ Although, there is no validation error for the `https://data.vlaanderen.be/ns/ge
 
 # Geotemporal query
 
-Now that we hadded an entity to the NGSI-LD context broker, we can use the temporal query API to retrieve our building according to a certain time window and location.
+Now that we added an entity to the NGSI-LD context broker, we can use the temporal query API to retrieve our building according to a certain time window and location.
 This will be important in the NGSI-LDF tutorial where Linked Data Fragments are generated through temporal queries.
 
 Following query parameters can be used to retrieve the building:
@@ -199,6 +199,6 @@ The coordinates reflect a polygon around the center of the city of Ghent:
 
 <img src="https://github.com/brechtvdv/tutorials.NGSI-LDF/raw/master/tile-ghent.PNG" width=400>
 
-The, use following URL (adapt the time interval): http://localhost:9090/ngsi-ld/v1/temporal/entities?type=https%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fgebouw%23Gebouw&georel=within&geometry=Polygon&coordinates=[[[3.69140625,51.06901665960391],[3.69140625,51.04139389812637],[3.7353515625,51.04139389812637],[3.7353515625,51.06901665960391]]]&timerel=between&time=2021-02-15T12:00:00.000Z&endTime=2021-02-15T13:00:00.000Z&timeproperty=modifiedAt&options=sysAttrs
+Then, use following URL (adapt the time interval): http://localhost:9090/ngsi-ld/v1/temporal/entities?type=https%3A%2F%2Fdata.vlaanderen.be%2Fns%2Fgebouw%23Gebouw&georel=within&geometry=Polygon&coordinates=[[[3.69140625,51.06901665960391],[3.69140625,51.04139389812637],[3.7353515625,51.04139389812637],[3.7353515625,51.06901665960391]]]&timerel=between&time=2021-02-15T12:00:00.000Z&endTime=2021-02-15T13:00:00.000Z&timeproperty=modifiedAt&options=sysAttrs
 
 Note that we also added `options=sysAttrs` to retrieve extra system metadata, such as `createdAt` and `modifiedAt`.
