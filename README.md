@@ -10,7 +10,6 @@ These tutorials are created for the COOCK Open City project.
 
 &nbsp; 101. [Understanding semantics](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Understanding-Semantics.md)<br/>
 &nbsp; 102. [Understanding vocabularies](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Understanding-Vocabularies.md)<br/>
-&nbsp; 103. [Understanding application profiles](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Understanding-Application-profiles.md) TODO<br/> 
 
 ### Setup Context Broker with OSLO data
 
