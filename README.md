@@ -1,10 +1,8 @@
-# tutorials.NGSI-LDF
+# tutorials.NGSI-LDF <img src="https://github.com/brechtvdv/tutorials.NGSI-LDF/raw/master/OpenStad_logo_black_L.png" align="right" width="162">
 _Beta version_
 
 This is set of tutorials to learn about semantics, setting up a NGSI-LD Context Broker and how an Linked Data Event Stream can be exposed on top of this.
 These tutorials are created for the COOCK Open City project.
-
-<img src="https://github.com/brechtvdv/tutorials.NGSI-LDF/raw/master/OpenStad_logo_black_L.png" width=400 style="float: right">
 
 ## Tutorials List
 
