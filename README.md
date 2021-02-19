@@ -1,6 +1,10 @@
 # tutorials.NGSI-LDF
-This is work in progress
-Tutorials on publishing Linked Data Fragments on top of NGSI-LD
+_Beta version_
+
+This is set of tutorials to learn about semantics, setting up a NGSI-LD Context Broker and how an Linked Data Event Stream can be exposed on top of this.
+These tutorials are created for the COOCK Open City project.
+
+<img src="https://github.com/brechtvdv/tutorials.NGSI-LDF/raw/master/OpenStad_logo_black_L.png" width=400 style="float: right">
 
 ## Tutorials List
 
@@ -8,7 +12,7 @@ Tutorials on publishing Linked Data Fragments on top of NGSI-LD
 
 &nbsp; 101. [Understanding semantics](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Understanding-Semantics.md)<br/>
 &nbsp; 102. [Understanding vocabularies](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Understanding-Vocabularies.md)<br/>
-&nbsp; 103. [Understanding application profiles](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Understanding-Application-profiles.md)<br/>
+&nbsp; 103. [Understanding application profiles](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Understanding-Application-profiles.md) TODO<br/> 
 
 ### Setup Context Broker with OSLO data
 
@@ -17,9 +21,9 @@ Tutorials on publishing Linked Data Fragments on top of NGSI-LD
 
 ### Linked Data Fragments on top of Context Broker
 
-&nbsp; 301. [Understanding fragments](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Understanding-Fragments.md)<br/>
+&nbsp; 301. [Understanding fragments](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Understanding-Fragments.md) TODO <br/> 
 &nbsp; 302. [Setup NGSI-LDF](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Setup-NGSI-LDF.md)<br/>
-&nbsp; 303. [Setup LDF prefix index](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Setup-LDF-Prefix-Index.md)<br/>
-&nbsp; 304. [Text-based search Demo](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Text-Based-Search-Demo.md)<br/>
+&nbsp; 303. [Setup LDF prefix index](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Setup-LDF-Prefix-Index.md) TODO <br/> 
+&nbsp; 304. [Text-based search Demo](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Text-Based-Search-Demo.md) TODO <br/> 
 
 
