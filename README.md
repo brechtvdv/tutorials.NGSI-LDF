@@ -16,7 +16,7 @@ These tutorials are created for the COOCK Open City project.
 &nbsp; 201. [Creating OSLO data snippet](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Data-Snippet.md)<br/>
 &nbsp; 202. [Setup context broker](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Setup-Context-Broker.md)<br/>
 
-### Linked Data Fragments on top of Context Broker
+### Linked Data Event Stream on top of Context Broker
 
 &nbsp; 301. [Understanding fragments](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Understanding-Fragments.md) TODO <br/> 
 &nbsp; 302. [Setup NGSI-LDF](https://github.com/brechtvdv/tutorials.NGSI-LDF/blob/master/tutorials.Setup-NGSI-LDF.md)<br/>
